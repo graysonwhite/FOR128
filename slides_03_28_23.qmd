@@ -1,7 +1,7 @@
 ---
 title: "Combining multiple tibbles with `dplyr`"
 author: "Grayson White"
-date: "FOR 128 | March 28, 2023"
+date: "March 28, 2023"
 format:
   revealjs:
     logo: msufor.png
@@ -10,21 +10,73 @@ format:
 editor: visual
 ---
 
-## Quarto
+## Data Joins in R
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
-
-## Bullets
-
-When you click the **Render** button a document will be generated that includes:
-
--   Content authored with markdown
--   Output from executable code
-
-## Code
-
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+Today, we'll talk about joining tibbles in `R` with `dplyr`.
 
 ```{r}
-1 + 1
+knitr::include_graphics("figs/tibbles.png")
 ```
+
+
+
+## Motivation 
+
+-   It is common in forestry, and in particular forest inventory, to have **multiple tibbles** where data are stored due to a variety of factors.
+-   In order to perform most statistical analyses, you must have the necessary data in **one tibble**. 
+
+## Types of Data Joins
+
+The `dplyr` package, which is part of the `tidyverse`, includes functions for two general types of joins:
+
+-   *Mutating joins*, which combine the **columns** of tibbles `x` and `y`, and
+-   *Filtering joins*, which match the **rows** of tibbles `x` and `y`.
+
+Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows. 
+
+## Examples
+
+For the following examples of data joins, we will use the tibbles from the first slide. We can load this data into R:\
+
+```{r, echo = TRUE}
+library(tidyverse)
+x <- tibble(spp_code = c("ABBA", "BEPA", "PIST"),
+            common_name = c("balsum fir", "paper birch", "white pine"))
+
+y <- tibble(spp_code = c("ABBA", "BEPA", "LALA"),
+            latin_name = c("Abies balsamea", 
+                           "Betula papyrifera",
+                           "Larix laricina"))
+```
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins: 
+
+1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins: 
+
+1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
+2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins: 
+
+1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
+2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
+3. `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins: 
+
+1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
+2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
+3. `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+4. `full_join(x, y)` keeps all rows of both `x` and `y`. 
+
+
