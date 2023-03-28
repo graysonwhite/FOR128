@@ -405,10 +405,22 @@ Grayson White
   <p class="date">2023-03-28</p>
 </section>
 <section id="data-joins-in-r" class="slide level2">
-<h2>Data Joins in R</h2>
+<h2>Data Joins in <code>R</code></h2>
 <p>Today, we’ll talk about joining tibbles in <code>R</code> with <code>dplyr</code>.</p>
 
-<img data-src="figs/tibbles.png" class="quarto-discovered-preview-image r-stretch" width="474"></section>
+<img data-src="figs/dplyr.png" class="quarto-discovered-preview-image r-stretch quarto-figure-center" width="956"><p>Artwork by Allison Horst.</p>
+</section>
+<section id="data-joins-in-r-1" class="slide level2">
+<h2>Data Joins in <code>R</code></h2>
+<p>Recall that the <code>dplyr</code> package, short for “data pliers”, is an <code>R</code> package all about wrangling data.</p>
+
+<img data-src="figs/dplyr.png" width="956" class="r-stretch quarto-figure-center"><p>Today, we will explore it’s tools for joining data tables (i.e.&nbsp;“tibbles”).</p>
+</section>
+<section id="data-joins-in-r-2" class="slide level2">
+<h2>Data Joins in <code>R</code></h2>
+<p>In particular, we’ll look at a few ways to join the following tables <code>x</code> and <code>y</code>:</p>
+
+<img data-src="figs/tibbles.png" width="474" class="r-stretch"></section>
 <section id="motivation" class="slide level2">
 <h2>Motivation</h2>
 <ul>
@@ -425,10 +437,9 @@ Grayson White
 </ul>
 <p>Think of how <code>mutate()</code> adds columns to a tibble, while <code>filter()</code> removes rows.</p>
 </section>
-<section id="examples" class="slide level2">
-<h2>Examples</h2>
-<p>For the following examples of data joins, we will use the tibbles from the first slide. We can load this data into R:<br>
-</p>
+<section id="example-data" class="slide level2">
+<h2>Example Data</h2>
+<p>For the following examples of data joins, we will use the tibbles from the first slide. We can load this data into <code>R</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">spp_code =</span> <span class="fu">c</span>(<span class="st">"ABBA"</span>, <span class="st">"BEPA"</span>, <span class="st">"PIST"</span>),</span>
@@ -475,8 +486,382 @@ Grayson White
 <li><code>inner_join(x, y)</code> keeps only the rows matched between <code>x</code> and <code>y</code>.</li>
 <li><code>full_join(x, y)</code> keeps all rows of both <code>x</code> and <code>y</code>.</li>
 </ol>
+</section>
+<section id="examples-mutating-joins" class="slide level2">
+<h2>Examples: Mutating Joins</h2>
+<p>Recall our example data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  spp_code common_name
+  &lt;chr&gt;    &lt;chr&gt;      
+1 ABBA     balsum fir 
+2 BEPA     paper birch
+3 PIST     white pine </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  spp_code latin_name       
+  &lt;chr&gt;    &lt;chr&gt;            
+1 ABBA     Abies balsamea   
+2 BEPA     Betula papyrifera
+3 LALA     Larix laricina   </code></pre>
+</div>
+</div>
+</section>
+<section id="left_join" class="slide level2">
+<h2><code>left_join()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">left_join</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(spp_code)`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 PIST     white pine  &lt;NA&gt;             </code></pre>
+</div>
+</div>
+</section>
+<section id="left_join-1" class="slide level2">
+<h2><code>left_join()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">left_join</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(spp_code)`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 PIST     white pine  &lt;NA&gt;             </code></pre>
+</div>
+</div>
+<p>But what’s that message about?</p>
+<pre><code>"Joining with `by = join_by(spp_code)`"</code></pre>
+</section>
+<section id="we-need-to-specify-a-key" class="slide level2">
+<h2>We need to specify a <em>key</em> 🔑</h2>
+<p>A <em>key</em> is can just be thought of the name(s) of the column(s) you’re joining by. In the <code>left_join()</code> from the last slide, <code>R</code> assumed we were joining by the column <code>spp_code</code> since both <code>x</code> and <code>y</code> have a column with that name.</p>
+</section>
+<section id="we-need-to-specify-a-key-1" class="slide level2">
+<h2>We need to specify a <em>key</em> 🔑</h2>
+<p>A <em>key</em> is can just be thought of the name(s) of the column(s) you’re joining by. In the <code>left_join()</code> from the last slide, <code>R</code> assumed we were joining by the column <code>spp_code</code> since both <code>x</code> and <code>y</code> have a column with that name.</p>
+<p>Keys are important, especially when the columns you are joining by have different names, or you are joining by multiple columns.</p>
+</section>
+<section id="left_join-with-a" class="slide level2">
+<h2><code>left_join()</code>, with a 🔑</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 PIST     white pine  &lt;NA&gt;             </code></pre>
+</div>
+</div>
+<ul>
+<li>Notice that we specify this key with the <code>by</code> argument. This is the same for all joins in <code>dplyr</code>.</li>
+</ul>
+</section>
+<section id="right_join" class="slide level2">
+<h2><code>right_join()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">right_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code latin_name        common_name
+  &lt;chr&gt;    &lt;chr&gt;             &lt;chr&gt;      
+1 ABBA     Abies balsamea    balsum fir 
+2 BEPA     Betula papyrifera paper birch
+3 PIST     &lt;NA&gt;              white pine </code></pre>
+</div>
+</div>
+</section>
+<section id="right_join-1" class="slide level2">
+<h2><code>right_join()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">right_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code latin_name        common_name
+  &lt;chr&gt;    &lt;chr&gt;             &lt;chr&gt;      
+1 ABBA     Abies balsamea    balsum fir 
+2 BEPA     Betula papyrifera paper birch
+3 PIST     &lt;NA&gt;              white pine </code></pre>
+</div>
+</div>
+<p>Notice that this is the same as our previous <code>left_join()</code>.</p>
+<p>What happens if we try switching the order of <code>x</code> and <code>y</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">right_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="right_join-2" class="slide level2">
+<h2><code>right_join()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">right_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code latin_name        common_name
+  &lt;chr&gt;    &lt;chr&gt;             &lt;chr&gt;      
+1 ABBA     Abies balsamea    balsum fir 
+2 BEPA     Betula papyrifera paper birch
+3 PIST     &lt;NA&gt;              white pine </code></pre>
+</div>
+</div>
+<p>Notice that this is the same as our previous <code>left_join()</code>.</p>
+<p>What happens if we try switching the order of <code>x</code> and <code>y</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">right_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 LALA     &lt;NA&gt;        Larix laricina   </code></pre>
+</div>
+</div>
+</section>
+<section id="inner_join" class="slide level2">
+<h2><code>inner_join()</code></h2>
+<p>How many rows will the output have?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">inner_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="inner_join-1" class="slide level2">
+<h2><code>inner_join()</code></h2>
+<p>How many rows will the output have?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">inner_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera</code></pre>
+</div>
+</div>
+<p>Why is this the result?</p>
+</section>
+<section id="full_join" class="slide level2">
+<h2><code>full_join()</code></h2>
+<p>How many rows will the output have?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">full_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="full_join-1" class="slide level2">
+<h2><code>full_join()</code></h2>
+<p>How many rows will the output have?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">full_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 PIST     white pine  &lt;NA&gt;             
+4 LALA     &lt;NA&gt;        Larix laricina   </code></pre>
+</div>
+</div>
+<p>Why is this the result?</p>
+</section>
+<section id="filtering-joins" class="slide level2">
+<h2>Filtering Joins</h2>
+<p><code>dplyr</code> contains two filtering joins:</p>
+<ol type="1">
+<li><code>semi_join(x, y)</code> keeps all the rows in <code>x</code> that have a match in <code>y</code>.</li>
+</ol>
+</section>
+<section id="filtering-joins-1" class="slide level2">
+<h2>Filtering Joins</h2>
+<p><code>dplyr</code> contains two filtering joins:</p>
+<ol type="1">
+<li><code>semi_join(x, y)</code> keeps all the rows in <code>x</code> that have a match in <code>y</code>.</li>
+<li><code>anti_join(x, y)</code> removes all the rows in <code>x</code> that have a match in <code>y</code>.</li>
+</ol>
+<p><strong>Note</strong>: Unlike mutating joins, filtering joins do not add any columns to the data.</p>
+</section>
+<section id="semi_join" class="slide level2">
+<h2><code>semi_join()</code></h2>
+<p>How many rows will this <code>semi_join</code> return? How many columns?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">semi_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="semi_join-1" class="slide level2">
+<h2><code>semi_join()</code></h2>
+<p>How many rows will this <code>semi_join</code> return? How many columns?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">semi_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  spp_code common_name
+  &lt;chr&gt;    &lt;chr&gt;      
+1 ABBA     balsum fir 
+2 BEPA     paper birch</code></pre>
+</div>
+</div>
+</section>
+<section id="semi_join-2" class="slide level2">
+<h2><code>semi_join()</code></h2>
+<p>What about this <code>semi_join</code>? Will it be the same as <code>semi_join(x, y)</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">semi_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="semi_join-3" class="slide level2">
+<h2><code>semi_join()</code></h2>
+<p>What about this <code>semi_join</code>? Will it be the same as <code>semi_join(x, y)</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">semi_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  spp_code latin_name       
+  &lt;chr&gt;    &lt;chr&gt;            
+1 ABBA     Abies balsamea   
+2 BEPA     Betula papyrifera</code></pre>
+</div>
+</div>
+</section>
+<section id="anti_join" class="slide level2">
+<h2><code>anti_join()</code></h2>
+<p>Let’s see what <code>anti_join</code> does:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">anti_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="anti_join-1" class="slide level2">
+<h2><code>anti_join()</code></h2>
+<p>Let’s see what <code>anti_join</code> does:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">anti_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  spp_code common_name
+  &lt;chr&gt;    &lt;chr&gt;      
+1 PIST     white pine </code></pre>
+</div>
+</div>
+<p>Why do we get this output?</p>
+</section>
+<section id="anti_join-2" class="slide level2">
+<h2><code>anti_join()</code></h2>
+<p>What happens if we switch the order of <code>x</code> and <code>y</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">anti_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="anti_join-3" class="slide level2">
+<h2><code>anti_join()</code></h2>
+<p>What happens if we switch the order of <code>x</code> and <code>y</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">anti_join</span>(y, x, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  spp_code latin_name    
+  &lt;chr&gt;    &lt;chr&gt;         
+1 LALA     Larix laricina</code></pre>
+</div>
+</div>
+</section>
+<section id="an-important-subtlety-column-names" class="slide level2">
+<h2>An Important Subtlety: Column Names</h2>
+<p>So far, we have joined <code>x</code> and <code>y</code> by the <code>spp_code</code> column.</p>
+<p>But what if <code>y</code> had the same column named differently:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>y <span class="ot">&lt;-</span> y <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a>  <span class="fu">rename</span>(<span class="at">species_code =</span> spp_code)</span>
+<span id="cb42-3"><a href="#cb42-3"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  species_code latin_name       
+  &lt;chr&gt;        &lt;chr&gt;            
+1 ABBA         Abies balsamea   
+2 BEPA         Betula papyrifera
+3 LALA         Larix laricina   </code></pre>
+</div>
+</div>
+</section>
+<section id="how-do-we-join-x-and-y" class="slide level2">
+<h2>How Do We Join <code>x</code> and <code>y</code>?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">left_join</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `left_join()`:
+! `by` must be supplied when `x` and `y` have no common variables.
+ℹ Use `cross_join()` to perform a cross-join.</code></pre>
+</div>
+</div>
+<p>Looks like we need to specify <code>by</code> (our 🔑)</p>
+</section>
+<section id="how-do-we-join-x-and-y-1" class="slide level2">
+<h2>How Do We Join <code>x</code> and <code>y</code>?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="fu">left_join</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `left_join()`:
+! `by` must be supplied when `x` and `y` have no common variables.
+ℹ Use `cross_join()` to perform a cross-join.</code></pre>
+</div>
+</div>
+<p>Looks like we need to specify <code>by</code> (our 🔑)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `left_join()`:
+! Join columns in `y` must be present in the data.
+✖ Problem with `spp_code`.</code></pre>
+</div>
+</div>
+<p>Still not working!</p>
+</section>
+<section id="how-do-we-join-x-and-y-2" class="slide level2">
+<h2>How Do We Join <code>x</code> and <code>y</code>?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="fu">left_join</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `left_join()`:
+! `by` must be supplied when `x` and `y` have no common variables.
+ℹ Use `cross_join()` to perform a cross-join.</code></pre>
+</div>
+</div>
+<p>Looks like we need to specify <code>by</code> (our 🔑)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="st">"spp_code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `left_join()`:
+! Join columns in `y` must be present in the data.
+✖ Problem with `spp_code`.</code></pre>
+</div>
+</div>
+<p>Still not working!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"spp_code"</span> <span class="ot">=</span> <span class="st">"species_code"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  spp_code common_name latin_name       
+  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;            
+1 ABBA     balsum fir  Abies balsamea   
+2 BEPA     paper birch Betula papyrifera
+3 PIST     white pine  &lt;NA&gt;             </code></pre>
+</div>
+</div>
 
-<img src="msufor.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<img src="figs/msufor.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

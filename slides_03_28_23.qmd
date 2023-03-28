@@ -4,21 +4,39 @@ author: "Grayson White"
 date: "March 28, 2023"
 format:
   revealjs:
-    logo: msufor.png
+    logo: figs/msufor.png
     css: msufor.css
     theme: [default, custom.scss]
 editor: visual
 ---
 
-## Data Joins in R
+## Data Joins in `R`
 
 Today, we'll talk about joining tibbles in `R` with `dplyr`.
+
+```{r, fig.align='center'}
+knitr::include_graphics("figs/dplyr.png")
+```
+
+Artwork by Allison Horst.
+
+## Data Joins in `R`
+
+Recall that the `dplyr` package, short for "data pliers", is an `R` package all about wrangling data. 
+
+```{r, fig.align='center'}
+knitr::include_graphics("figs/dplyr.png")
+```
+
+Today, we will explore it's tools for joining data tables (i.e. "tibbles").
+
+## Data Joins in `R`
+
+In particular, we'll look at a few ways to join the following tables `x` and `y`:
 
 ```{r}
 knitr::include_graphics("figs/tibbles.png")
 ```
-
-
 
 ## Motivation 
 
@@ -34,9 +52,9 @@ The `dplyr` package, which is part of the `tidyverse`, includes functions for tw
 
 Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows. 
 
-## Examples
+## Example Data
 
-For the following examples of data joins, we will use the tibbles from the first slide. We can load this data into R:\
+For the following examples of data joins, we will use the tibbles from the first slide. We can load this data into `R`:
 
 ```{r, echo = TRUE}
 library(tidyverse)
@@ -78,5 +96,261 @@ y <- tibble(spp_code = c("ABBA", "BEPA", "LALA"),
 2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
 3. `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
 4. `full_join(x, y)` keeps all rows of both `x` and `y`. 
+
+## Examples: Mutating Joins
+
+Recall our example data
+
+```{r, echo = TRUE}
+x
+y
+```
+
+## `left_join()`
+
+```{r, echo = TRUE, message = TRUE}
+left_join(x, y)
+```
+
+## `left_join()`
+
+```{r, echo = TRUE, message = TRUE}
+left_join(x, y)
+```
+
+But what's that message about? 
+
+    "Joining with `by = join_by(spp_code)`"
+    
+## We need to specify a *key* `r emo::ji("key")`
+
+A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name. 
+
+## We need to specify a *key* `r emo::ji("key")`
+
+A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name. 
+
+Keys are important, especially when the columns you are joining by have different names, or you are joining by multiple columns. 
+
+
+## `left_join()`, with a `r emo::ji("key")`
+
+```{r, echo = TRUE, message = TRUE}
+left_join(x, y, by = "spp_code")
+```
+
+-   Notice that we specify this key with the `by` argument. This is the same for all joins in `dplyr`. 
+
+## `right_join()`
+
+```{r, echo = TRUE, message = TRUE}
+right_join(y, x, by = "spp_code")
+```
+
+## `right_join()`
+
+```{r, echo = TRUE, message = TRUE}
+right_join(y, x, by = "spp_code")
+```
+
+Notice that this is the same as our previous `left_join()`.
+
+What happens if we try switching the order of `x` and `y`?
+
+```{r, output = FALSE, echo = TRUE}
+right_join(x, y, by = "spp_code")
+```
+
+## `right_join()`
+
+```{r, echo = TRUE, message = TRUE}
+right_join(y, x, by = "spp_code")
+```
+
+Notice that this is the same as our previous `left_join()`.
+
+What happens if we try switching the order of `x` and `y`?
+
+```{r, echo = TRUE}
+right_join(x, y, by = "spp_code")
+```
+
+## `inner_join()`
+
+How many rows will the output have?
+
+```{r, echo = TRUE, output = FALSE}
+inner_join(x, y, by = "spp_code")
+```
+
+## `inner_join()`
+
+How many rows will the output have?
+
+```{r, echo = TRUE}
+inner_join(x, y, by = "spp_code")
+```
+
+Why is this the result? 
+
+## `full_join()`
+
+How many rows will the output have?
+
+```{r, echo = TRUE, output = FALSE}
+full_join(x, y, by = "spp_code")
+```
+
+## `full_join()`
+
+How many rows will the output have?
+
+```{r, echo = TRUE}
+full_join(x, y, by = "spp_code")
+```
+
+Why is this the result?
+
+## Filtering Joins
+
+`dplyr` contains two filtering joins: 
+
+1. `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`. 
+
+## Filtering Joins
+
+`dplyr` contains two filtering joins: 
+
+1. `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`. 
+2. `anti_join(x, y)` removes all the rows in `x` that have a match in `y`.
+
+**Note**: Unlike mutating joins, filtering joins do not add any columns to the data. 
+
+## `semi_join()`
+
+How many rows will this `semi_join` return? How many columns?
+
+```{r, output = F, echo = T}
+semi_join(x, y, by = "spp_code")
+```
+
+## `semi_join()`
+
+How many rows will this `semi_join` return? How many columns?
+
+```{r, echo = TRUE}
+semi_join(x, y, by = "spp_code")
+```
+
+## `semi_join()`
+
+What about this `semi_join`? Will it be the same as `semi_join(x, y)`? 
+
+```{r, echo = T, output = F}
+semi_join(y, x, by = "spp_code")
+```
+
+## `semi_join()`
+
+What about this `semi_join`? Will it be the same as `semi_join(x, y)`? 
+
+```{r, echo = TRUE}
+semi_join(y, x, by = "spp_code")
+```
+
+## `anti_join()`
+
+Let's see what `anti_join` does:
+
+```{r, echo = TRUE, output = F}
+anti_join(x, y, by = "spp_code")
+```
+
+## `anti_join()`
+
+Let's see what `anti_join` does:
+
+```{r, echo = TRUE, output = T}
+anti_join(x, y, by = "spp_code")
+```
+
+Why do we get this output? 
+
+## `anti_join()`
+
+What happens if we switch the order of `x` and `y`? 
+
+```{r, echo = TRUE, output = F}
+anti_join(y, x, by = "spp_code")
+```
+
+## `anti_join()`
+
+What happens if we switch the order of `x` and `y`? 
+
+```{r, echo = TRUE, output = T}
+anti_join(y, x, by = "spp_code")
+```
+
+## An Important Subtlety: Column Names
+
+So far, we have joined `x` and `y` by the `spp_code` column. 
+
+But what if `y` had the same column named differently:
+
+```{r, echo=T, output=T}
+y <- y %>%
+  rename(species_code = spp_code)
+y
+```
+
+## How Do We Join `x` and `y`? 
+
+```{r, output=T, echo=T, error = T}
+left_join(x, y)
+```
+
+Looks like we need to specify `by` (our `r emo::ji("key")`)
+
+## How Do We Join `x` and `y`? 
+
+```{r, output=T, echo=T, error = T}
+left_join(x, y)
+```
+
+Looks like we need to specify `by` (our `r emo::ji("key")`)
+
+```{r, output=T, echo=T, error = T}
+left_join(x, y, by = "spp_code")
+```
+
+Still not working!
+
+## How Do We Join `x` and `y`? 
+
+```{r, output=T, echo=T, error = T}
+left_join(x, y)
+```
+
+Looks like we need to specify `by` (our `r emo::ji("key")`)
+
+```{r, output=T, echo=T, error = T}
+left_join(x, y, by = "spp_code")
+```
+
+Still not working!
+
+```{r, output=T, echo=T}
+left_join(x, y, by = c("spp_code" = "species_code"))
+```
+
+
+
+
+
+
+
+
+
 
 
