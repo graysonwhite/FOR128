@@ -1,0 +1,4 @@
+- source: slides_03_28_23.qmd
+  quarto-pub:
+    - id: d438ea72-8f14-46a9-b317-42379abdc748
+      url: 'https://graysonwhite.quarto.pub/combining-multiple-tibbles-with-dplyr'
