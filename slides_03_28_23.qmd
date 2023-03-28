@@ -4,8 +4,6 @@ author: "Grayson White"
 date: "March 28, 2023"
 format:
   revealjs:
-    logo: figs/msufor.png
-    css: msufor.css
     theme: [default, custom.scss]
 editor: visual
 ---
