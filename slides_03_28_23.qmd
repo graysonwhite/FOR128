@@ -4,8 +4,6 @@ author: "Grayson White"
 date: "March 28, 2023"
 format:
   revealjs:
-    logo: figs/msufor.png
-    css: msufor.css
     theme: [default, custom.scss]
 editor: visual
 ---
@@ -22,7 +20,7 @@ Artwork by Allison Horst.
 
 ## Data Joins in `R`
 
-Recall that the `dplyr` package, short for "data pliers", is an `R` package all about wrangling data. 
+Recall that the `dplyr` package, short for "data pliers", is an `R` package all about wrangling data.
 
 ```{r, fig.align='center'}
 knitr::include_graphics("figs/dplyr.png")
@@ -38,10 +36,10 @@ In particular, we'll look at a few ways to join the following tables `x` and `y`
 knitr::include_graphics("figs/tibbles.png")
 ```
 
-## Motivation 
+## Motivation
 
 -   It is common in forestry, and in particular forest inventory, to have **multiple tibbles** where data are stored due to a variety of factors.
--   In order to perform most statistical analyses, you must have the necessary data in **one tibble**. 
+-   In order to perform most statistical analyses, you must have the necessary data in **one tibble**.
 
 ## Types of Data Joins
 
@@ -50,7 +48,7 @@ The `dplyr` package, which is part of the `tidyverse`, includes functions for tw
 -   *Mutating joins*, which combine the **columns** of tibbles `x` and `y`, and
 -   *Filtering joins*, which match the **rows** of tibbles `x` and `y`.
 
-Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows. 
+Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows.
 
 ## Example Data
 
@@ -69,33 +67,33 @@ y <- tibble(spp_code = c("ABBA", "BEPA", "LALA"),
 
 ## Mutating Joins
 
-`dplyr` contains four mutating joins: 
+`dplyr` contains four mutating joins:
 
-1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
-
-## Mutating Joins
-
-`dplyr` contains four mutating joins: 
-
-1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
-2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
 
 ## Mutating Joins
 
-`dplyr` contains four mutating joins: 
+`dplyr` contains four mutating joins:
 
-1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
-2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
-3. `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.
 
 ## Mutating Joins
 
-`dplyr` contains four mutating joins: 
+`dplyr` contains four mutating joins:
 
-1. `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns. 
-2. `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.  
-3. `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
-4. `full_join(x, y)` keeps all rows of both `x` and `y`. 
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.\
+3.  `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins:
+
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.\
+3.  `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+4.  `full_join(x, y)` keeps all rows of both `x` and `y`.
 
 ## Examples: Mutating Joins
 
@@ -118,20 +116,19 @@ left_join(x, y)
 left_join(x, y)
 ```
 
-But what's that message about? 
+But what's that message about?
 
     "Joining with `by = join_by(spp_code)`"
-    
-## We need to specify a *key* `r emo::ji("key")`
-
-A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name. 
 
 ## We need to specify a *key* `r emo::ji("key")`
 
-A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name. 
+A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name.
 
-Keys are important, especially when the columns you are joining by have different names, or you are joining by multiple columns. 
+## We need to specify a *key* `r emo::ji("key")`
 
+A *key* is can just be thought of the name(s) of the column(s) you're joining by. In the `left_join()` from the last slide, `R` assumed we were joining by the column `spp_code` since both `x` and `y` have a column with that name.
+
+Keys are important, especially when the columns you are joining by have different names, or you are joining by multiple columns.
 
 ## `left_join()`, with a `r emo::ji("key")`
 
@@ -139,7 +136,7 @@ Keys are important, especially when the columns you are joining by have differen
 left_join(x, y, by = "spp_code")
 ```
 
--   Notice that we specify this key with the `by` argument. This is the same for all joins in `dplyr`. 
+-   Notice that we specify this key with the `by` argument. This is the same for all joins in `dplyr`.
 
 ## `right_join()`
 
@@ -191,7 +188,7 @@ How many rows will the output have?
 inner_join(x, y, by = "spp_code")
 ```
 
-Why is this the result? 
+Why is this the result?
 
 ## `full_join()`
 
@@ -213,18 +210,18 @@ Why is this the result?
 
 ## Filtering Joins
 
-`dplyr` contains two filtering joins: 
+`dplyr` contains two filtering joins:
 
-1. `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`. 
+1.  `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`.
 
 ## Filtering Joins
 
-`dplyr` contains two filtering joins: 
+`dplyr` contains two filtering joins:
 
-1. `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`. 
-2. `anti_join(x, y)` removes all the rows in `x` that have a match in `y`.
+1.  `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`.
+2.  `anti_join(x, y)` removes all the rows in `x` that have a match in `y`.
 
-**Note**: Unlike mutating joins, filtering joins do not add any columns to the data. 
+**Note**: Unlike mutating joins, filtering joins do not add any columns to the data.
 
 ## `semi_join()`
 
@@ -244,7 +241,7 @@ semi_join(x, y, by = "spp_code")
 
 ## `semi_join()`
 
-What about this `semi_join`? Will it be the same as `semi_join(x, y)`? 
+What about this `semi_join`? Will it be the same as `semi_join(x, y)`?
 
 ```{r, echo = T, output = F}
 semi_join(y, x, by = "spp_code")
@@ -252,7 +249,7 @@ semi_join(y, x, by = "spp_code")
 
 ## `semi_join()`
 
-What about this `semi_join`? Will it be the same as `semi_join(x, y)`? 
+What about this `semi_join`? Will it be the same as `semi_join(x, y)`?
 
 ```{r, echo = TRUE}
 semi_join(y, x, by = "spp_code")
@@ -274,11 +271,11 @@ Let's see what `anti_join` does:
 anti_join(x, y, by = "spp_code")
 ```
 
-Why do we get this output? 
+Why do we get this output?
 
 ## `anti_join()`
 
-What happens if we switch the order of `x` and `y`? 
+What happens if we switch the order of `x` and `y`?
 
 ```{r, echo = TRUE, output = F}
 anti_join(y, x, by = "spp_code")
@@ -286,7 +283,7 @@ anti_join(y, x, by = "spp_code")
 
 ## `anti_join()`
 
-What happens if we switch the order of `x` and `y`? 
+What happens if we switch the order of `x` and `y`?
 
 ```{r, echo = TRUE, output = T}
 anti_join(y, x, by = "spp_code")
@@ -294,7 +291,7 @@ anti_join(y, x, by = "spp_code")
 
 ## An Important Subtlety: Column Names
 
-So far, we have joined `x` and `y` by the `spp_code` column. 
+So far, we have joined `x` and `y` by the `spp_code` column.
 
 But what if `y` had the same column named differently:
 
@@ -304,7 +301,7 @@ y <- y %>%
 y
 ```
 
-## How Do We Join `x` and `y`? 
+## How Do We Join `x` and `y`?
 
 ```{r, output=T, echo=T, error = T}
 left_join(x, y)
@@ -312,7 +309,7 @@ left_join(x, y)
 
 Looks like we need to specify `by` (our `r emo::ji("key")`)
 
-## How Do We Join `x` and `y`? 
+## How Do We Join `x` and `y`?
 
 ```{r, output=T, echo=T, error = T}
 left_join(x, y)
@@ -326,7 +323,7 @@ left_join(x, y, by = "spp_code")
 
 Still not working!
 
-## How Do We Join `x` and `y`? 
+## How Do We Join `x` and `y`?
 
 ```{r, output=T, echo=T, error = T}
 left_join(x, y)
@@ -343,14 +340,3 @@ Still not working!
 ```{r, output=T, echo=T}
 left_join(x, y, by = c("spp_code" = "species_code"))
 ```
-
-
-
-
-
-
-
-
-
-
-
