@@ -1,0 +1,218 @@
+---
+title: "Applications of Data Joins in Forestry"
+author: "Grayson White"
+date: "March 30, 2023"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+editor: visual
+---
+
+## Recall from Tuesday
+
+The `dplyr` package, which is part of the `tidyverse`, includes functions for two general types of joins:
+
+-   *Mutating joins*, which combine the **columns** of tibbles `x` and `y`, and
+-   *Filtering joins*, which match the **rows** of tibbles `x` and `y`.
+
+Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins:
+
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins:
+
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins:
+
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.\
+3.  `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+
+## Mutating Joins
+
+`dplyr` contains four mutating joins:
+
+1.  `left_join(x, y)` keeps all rows of `x`, but if a row in `y` does not match to `x`, an `NA` is assigned to that row in the new columns.
+2.  `right_join(x, y)` is equivalent to `left_join(y, x)`, except for column order.\
+3.  `inner_join(x, y)` keeps only the rows matched between `x` and `y`.
+4.  `full_join(x, y)` keeps all rows of both `x` and `y`.
+
+## Filtering Joins
+
+`dplyr` contains two filtering joins:
+
+1.  `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`.
+
+## Filtering Joins
+
+`dplyr` contains two filtering joins:
+
+1.  `semi_join(x, y)` keeps all the rows in `x` that have a match in `y`.
+2.  `anti_join(x, y)` removes all the rows in `x` that have a match in `y`.
+
+**Note**: Unlike mutating joins, filtering joins do not add any columns to the data.
+
+## Today: Applying Allometric Equations Using Joins
+
+*Allometric equations* are regression equations that relate measurements like species, DBH, and perhaps height to more difficult and expensive to measure quantities such as stem volume or biomass.
+
+## Today: Applying Allometric Equations Using Joins
+
+*Allometric equations* are regression equations that relate measurements like species, DBH, and perhaps height to more difficult and expensive to measure quantities such as stem volume or biomass.
+
+-   Allometric equations take the inexpensive measurements as input (e.g., species and DBH) and return estimates of the expensive quantity (e.g., height, volume, biomass)
+
+## Today: Applying Allometric Equations Using Joins
+
+*Allometric equations* are regression equations that relate measurements like species, DBH, and perhaps height to more difficult and expensive to measure quantities such as stem volume or biomass.
+
+-   Allometric equations take the inexpensive measurements as input (e.g., species and DBH) and return estimates of the expensive quantity (e.g., height, volume, biomass)
+
+-   Today, we'll focus on calculating tree height based on DBH and species. 
+
+## The Model
+
+The model we'll use to calculate height is as follows
+$$
+\text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
+$$
+where $\beta_1$, $\beta_2$ are stored in "datasets/FVS_NE_coefficients.csv" and are different for each forest vegetation code.
+
+We'll access data from a few tibbles in order to create our final height calculation. 
+
+## The Data: stands
+
+```{r, echo = TRUE}
+library(tidyverse)
+stands <- read_csv("datasets/two_stands_wo_ht_vol.csv")
+head(stands)
+dim(stands)
+```
+
+## The Data: stands
+
+```{r, echo = TRUE}
+library(tidyverse)
+stands <- read_csv("datasets/two_stands_wo_ht_vol.csv")
+head(stands)
+dim(stands)
+```
+
+**Big Picture**: We'd like to calculate tree height for each row of this tibble. To do so, we'll need to load another tibble.
+
+## The Data: FVS Coefficients (our $\beta$'s)
+
+```{r, echo = TRUE}
+ht_coeffs <- read_csv("datasets/FVS_NE_coefficients.csv")
+ht_coeffs
+```
+
+## Q: How can we join these tibbles?
+
+```{r, echo=TRUE}
+head(stands)
+head(ht_coeffs)
+```
+
+## A: We need another tibble! 
+
+## A: We need another tibble! 
+
+The "spp_codes" tibble contains the columns needed to be able to link  "stands" and "ht_coeffs".
+
+```{r, echo=TRUE}
+spp_codes <- read_csv("datasets/USFS_species_codes.csv")
+head(spp_codes)
+```
+
+## Now We Can Join Our Data
+
+```{r, echo = TRUE}
+head(stands, n = 3)
+stands <- stands %>%
+  left_join(spp_codes, by = "scientific_name") %>%
+  select(-common_name, -USFS_FIA_code, -PLANTS_code) # remove unecessary columns
+head(stands, n = 3)
+```
+
+-   Now, "stands" contains the USFS_FVS_code column
+
+## Q: Why did we use a `left_join()` in the last slide? 
+
+## Q: Why did we use a `left_join()` in the last slide? 
+
+A: We want to retain all the rows of "stands", but only the rows in "spp_codes" that match in "stands". 
+
+## Q: How can we check if all rows had a scientific_name match? 
+
+## Q: How can we check if all rows had a scientific_name match? 
+
+A: Use `anti_join()`!
+
+## Q: How can we check if all rows had a scientific_name match? 
+
+A: Use `anti_join()`!
+
+```{r, echo = TRUE}
+anti_join(stands, spp_codes, by = "scientific_name")
+```
+
+## Join $\beta$'s to "stands"
+
+## Join $\beta$'s to "stands"
+
+Q: What type of join should we use? 
+
+## Join $\beta$'s to "stands"
+
+Q: What type of join should we use? 
+
+A: A `left_join()` (or a `right_join()`, if you'd like)
+
+```{r, echo = TRUE}
+stands <- left_join(stands, ht_coeffs, by = "USFS_FVS_code")
+
+# or alternatively
+# stands <- right_join(ht_coeffs, stands, by = "USFS_FVS_code")
+
+head(stands)
+```
+
+## Now We Can Make Our Calculation! 
+
+Recall the equation for height: 
+$$
+\text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
+$$
+
+## Now We Can Make Our Calculation! 
+
+Recall the equation for height: 
+$$
+\text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
+$$
+
+```{r, echo = TRUE}
+stands <- stands %>%
+  mutate(height_ft = 4.5 + exp( beta_1 + beta_2 / (DBH_in + 1) ) ) %>%
+  select(-beta_1, -beta_2) # Don't need these anymore
+head(stands)
+```
+
+
+
+
+
+
+
+
