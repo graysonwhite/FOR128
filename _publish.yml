@@ -2,3 +2,7 @@
   quarto-pub:
     - id: d438ea72-8f14-46a9-b317-42379abdc748
       url: 'https://graysonwhite.quarto.pub/combining-multiple-tibbles-with-dplyr'
+- source: slides_03_30_23.qmd
+  quarto-pub:
+    - id: 1444e67d-8a0a-4cf4-8461-8d48c92b34f9
+      url: 'https://graysonwhite.quarto.pub/applications-of-data-joins-in-forestry'
