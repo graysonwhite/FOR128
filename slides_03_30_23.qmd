@@ -78,17 +78,15 @@ Think of how `mutate()` adds columns to a tibble, while `filter()` removes rows.
 
 -   Allometric equations take the inexpensive measurements as input (e.g., species and DBH) and return estimates of the expensive quantity (e.g., height, volume, biomass)
 
--   Today, we'll focus on calculating tree height based on DBH and species. 
+-   Today, we'll focus on calculating tree height based on DBH and species.
 
 ## The Model
 
-The model we'll use to calculate height is as follows
-$$
+The model we'll use to calculate height is as follows $$
 \text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
-$$
-where $\beta_1$, $\beta_2$ are stored in "datasets/FVS_NE_coefficients.csv" and are different for each forest vegetation code.
+$$ where $\beta_1$, $\beta_2$ are stored in "datasets/FVS_NE_coefficients.csv" and are different for each forest vegetation code.
 
-We'll access data from a few tibbles in order to create our final height calculation. 
+We'll access data from a few tibbles in order to create our final height calculation.
 
 ## The Data: stands
 
@@ -124,11 +122,11 @@ head(stands)
 head(ht_coeffs)
 ```
 
-## A: We need another tibble! 
+## A: We need another tibble!
 
-## A: We need another tibble! 
+## A: We need another tibble!
 
-The "spp_codes" tibble contains the columns needed to be able to link  "stands" and "ht_coeffs".
+The "spp_codes" tibble contains the columns needed to be able to link "stands" and "ht_coeffs".
 
 ```{r, echo=TRUE}
 spp_codes <- read_csv("datasets/USFS_species_codes.csv")
@@ -147,19 +145,19 @@ head(stands, n = 3)
 
 -   Now, "stands" contains the USFS_FVS_code column
 
-## Q: Why did we use a `left_join()` in the last slide? 
+## Q: Why did we use a `left_join()` in the last slide?
 
-## Q: Why did we use a `left_join()` in the last slide? 
+## Q: Why did we use a `left_join()` in the last slide?
 
-A: We want to retain all the rows of "stands", but only the rows in "spp_codes" that match in "stands". 
+A: We want to retain all the rows of "stands", but only the rows in "spp_codes" that match in "stands".
 
-## Q: How can we check if all rows had a scientific_name match? 
+## Q: How can we check if all rows had a scientific_name match?
 
-## Q: How can we check if all rows had a scientific_name match? 
+## Q: How can we check if all rows had a scientific_name match?
 
 A: Use `anti_join()`!
 
-## Q: How can we check if all rows had a scientific_name match? 
+## Q: How can we check if all rows had a scientific_name match?
 
 A: Use `anti_join()`!
 
@@ -171,11 +169,11 @@ anti_join(stands, spp_codes, by = "scientific_name")
 
 ## Join $\beta$'s to "stands"
 
-Q: What type of join should we use? 
+Q: What type of join should we use?
 
 ## Join $\beta$'s to "stands"
 
-Q: What type of join should we use? 
+Q: What type of join should we use?
 
 A: A `left_join()` (or a `right_join()`, if you'd like)
 
@@ -188,17 +186,15 @@ stands <- left_join(stands, ht_coeffs, by = "USFS_FVS_code")
 head(stands)
 ```
 
-## Now We Can Make Our Calculation! 
+## Now We Can Make Our Calculation!
 
-Recall the equation for height: 
-$$
+Recall the equation for height: $$
 \text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
 $$
 
-## Now We Can Make Our Calculation! 
+## Now We Can Make Our Calculation!
 
-Recall the equation for height: 
-$$
+Recall the equation for height: $$
 \text{height} = 4.5 + \exp\left( \beta_1 + \frac{\beta_2}{\text{DBH} + 1.0} \right)
 $$
 
@@ -208,11 +204,3 @@ stands <- stands %>%
   select(-beta_1, -beta_2) # Don't need these anymore
 head(stands)
 ```
-
-
-
-
-
-
-
-
